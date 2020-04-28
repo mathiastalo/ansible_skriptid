@@ -1,0 +1,25 @@
+---
+- hosts: webservers
+  tasks:
+  - name: installeerime python-mysqldb
+    apt: name=python-mysqldb state=latest
+
+  - name: Loome kasutaja 'root' ja temale parooli 'qwerty' koos kokidega privilegedega
+    mysql_user:
+      name: root
+      password: qwerty
+      priv: '*.*:ALL,GRANT'
+      state: present
+ 
+  - name: Loome root login faili
+    copy:
+      dest: /root/.my.cnf
+      owner: root
+      group: root
+      mode: 0600
+      content: |
+           [client]
+           user=root
+           password=qwerty
+  - name: alglaadimine mysql
+    service: name=mysql state=restarted
